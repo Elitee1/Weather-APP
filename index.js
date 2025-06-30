@@ -1,6 +1,7 @@
 const weatherForm = document.querySelector(".weatherForm"); 
 const cityInput = document.querySelector(".cityInput");
 const card = document.querySelector(".card");
+const forecastweather = document.querySelector(".forecastweather")
 
 const apiKey = "e118f6268f8712e85e87589b9f781330";
 
@@ -22,26 +23,75 @@ weatherForm.addEventListener("submit", async event => {
 });
 
 async function getWeatherData(city) {
-    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${apiKey}`;
+    const apiUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(city)}&appid=${apiKey}`;
+
     
     const response = await fetch(apiUrl);
+    
     if(!response.ok){
         throw new Error("Could not get the weather data");
     }
 
     return await response.json();
+    
 }
 
 async function displayWeatherInfo(data){
-    const {
-        name: city, 
-        main: {temp, humidity},
-        weather: [{description, id}]
-    } = data;
+    console.log(data)
 
+    const city = data.city.name; 
+    const timezone= data.city.timezone; 
+    const forecast = getForeCastOneHourAhead(data.list);
+
+    
+
+    const {
+        main: {
+            temp,
+            humidity
+        } ,
+        weather: [{description, id}],
+        dt, 
+        
+    } = forecast;
+    
+    
+
+    
+    const localTimestamp = dt;
+    const localDate = new Date((dt + timezone) * 1000); 
+
+
+    console.log(localDate)
+    const formatedDate = localDate.toLocaleDateString("en-GB", {
+        weekday: 'short',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+       
+    });
+    const formatedTime = localDate.toLocaleTimeString("en-GB", {
+        hour:"2-digit",
+        minute: "2-digit"
+    })
     card.textContent = "";
     card.style.display = "flex";
+    forecastweather.textContent = ""
+    forecastweather.style.display ="flex"
 
+    const dateTimeDisplay = document.createElement("p");
+    dateTimeDisplay.textContent =  `${formatedDate}`;
+    dateTimeDisplay.classList.add("weatherMessage");
+    card.appendChild(dateTimeDisplay)
+
+    const forecastDisplay = document.createElement("p")
+    forecastDisplay.textContent = `${formatedTime} ${(forecast.main.temp - 273.15).toFixed(1)}°C`;
+    forecastDisplay.classList.add("weatherMessage"); 
+    forecastweather.appendChild(forecastDisplay)
+
+
+
+    
     const cityDisplay = document.createElement("h1");
     const tempDisplay = document.createElement("p");
     const humidityDisplay = document.createElement("p");
@@ -81,6 +131,8 @@ async function displayWeatherInfo(data){
     clothesMessage.classList.add("weatherMessage");
     card.appendChild(clothesMessage);
 
+ 
+
 
 }
 
@@ -104,6 +156,18 @@ async function getWeatherEmoji(weatherId){
             return {emoji: "❓", message: "Weather unknown.", clothMessage: "you better be careful"};
     }
 }
+
+function getForeCastOneHourAhead(list){
+    const now = Date.now();
+    const oneHourLater = now + 60*60*1000;
+    return list.reduce((closest, current) => {
+        const currentDiff = Math.abs(current.dt * 1000 - oneHourLater);
+        const closestDiff = Math.abs(closest.dt * 1000 - oneHourLater);
+        return currentDiff < closestDiff ? current : closest;
+    })
+    
+}
+
 
 function displayError(message){
     card.textContent = "";

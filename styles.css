@@ -49,6 +49,22 @@ button[type="submit"]:hover{
     flex-direction: column;
     align-items: center;
 }
+
+.forecastweather{
+    background:linear-gradient(180deg, hsl(210, 100%, 75%), hsl(40, 100%, 75%));
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 5px hsla(0, 0%, 0%, 0.5);
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    gap: 10px;
+}
+
+
     
 h1{
     font-size: 3.5rem;
@@ -58,7 +74,7 @@ h1{
 }
 
 p{
-    font-family: 1.5rem;
+    font-size: 1.5rem;
     margin: 5px 0;
 
 }
