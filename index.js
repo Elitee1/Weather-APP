@@ -48,6 +48,8 @@ async function displayWeatherInfo(data){
     const descDisplay = document.createElement("p");
     const weatherEmoji = document.createElement("p");
     const weatherMessage = document.createElement("p");
+    const clothesMessage = document.createElement("p");
+
 
     const weatherInfo = await getWeatherEmoji(id);
 
@@ -74,26 +76,32 @@ async function displayWeatherInfo(data){
     weatherMessage.textContent = weatherInfo.message;
     weatherMessage.classList.add("weatherMessage");
     card.appendChild(weatherMessage);
+
+    clothesMessage.textContent = weatherInfo.clothMessage;
+    clothesMessage.classList.add("weatherMessage");
+    card.appendChild(clothesMessage);
+
+
 }
 
 async function getWeatherEmoji(weatherId){
     switch(true){
         case(weatherId >= 200 && weatherId < 300):
-            return {emoji: "⛈️", message: "Thunderstorms, stay safe!"};
+            return {emoji: "⛈️", message: "Thunderstorms, stay safe!",  clothMessage:"you better have a jacket and an unbrella"};
         case(weatherId >= 300 && weatherId < 400):
-            return {emoji: "🌧️", message: "Light drizzle outside."};
+            return {emoji: "🌧️", message: "Light drizzle outside.",  clothMessage:"wear a slight waterproof jacket"};
         case(weatherId >= 500 && weatherId < 600):
-            return {emoji: "🌧️", message: "Rainy weather."};
+            return {emoji: "🌧️", message: "Rainy weather.",  clothMessage:"wear a waterproof jacket"};
         case(weatherId >= 600 && weatherId < 700):
-            return {emoji: "❄️", message: "Snowy conditions."};
+            return {emoji: "❄️", message: "Snowy conditions.",  clothMessage:"wear a jacket"};
         case(weatherId >= 700 && weatherId < 800):
-            return {emoji: "🌫️", message: "Foggy weather."};
+            return {emoji: "🌫️", message: "Foggy weather.",  clothMessage: "wear normal clothes"};
         case(weatherId === 800):
-            return {emoji: "☀️", message: "Clear skies!"};
+            return {emoji: "☀️", message: "Clear skies!", clothMessage: "you better wear a sunglass" };
         case(weatherId > 800 && weatherId < 810):
-            return {emoji: "☁️", message: "Cloudy skies."};
+            return {emoji: "☁️", message: "Cloudy skies.", clothMessage: "just wear normal clothes"};
         default:
-            return {emoji: "❓", message: "Weather unknown."};
+            return {emoji: "❓", message: "Weather unknown.", clothMessage: "you better be careful"};
     }
 }
 
